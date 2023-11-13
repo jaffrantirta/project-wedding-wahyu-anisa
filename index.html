@@ -25,61 +25,11 @@
 	<!-- Favicons -->
     <link href="assets/images/favicon.png" rel="icon">
     <link href="assets/images/apple-touch-icon.png" rel="apple-touch-icon">
+
+	<!-- supabase -->
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
-		function SubForm (){
-		    $("#butsave").attr("disabled", "disabled");
-		    var nama = $('#nama').val();
-    		var hadir = $("input[type='radio'][name='kehadiran']:checked").val();
-    		var ucapan = $("#ucapan").val();
-    		
-    		if(nama!="" && hadir!="" && ucapan!="" ){
-    		    $.ajax({
-				url: "save.php",
-				type: "POST",
-				data: {
-					nama: nama,
-					hadir: hadir,
-					ucapan: ucapan			
-				},
-				cache: false,
-				beforeSend: function(){
-                    $("#showLoading").show();
-                },
-				success: function(dataResult){
-					var dataResult = JSON.parse(dataResult);
-					if(dataResult.statusCode==200){
-						$("#butsave").removeAttr("disabled");
-						
-						$('#showNotif').html('Ucapan sudah tersampaikan');
-                        $('#rsvp-form')[0].reset();
-                        $('#showNotif').fadeIn('slow');
-                        setTimeout(function() {                        
-                            $('#showNotif').fadeOut('slow');
-                        }, 3000); //  1000 = 1detik						
-					}
-					else if(dataResult.statusCode==201){
-					   alert("Error occured !");
-					}
-					
-				},
-                complete:function(dataResult){
-                        $("#showLoading").hide();
-				},
-				error: function(){
-					alert("There was an error :(")
-				}
-			});
-    		} else {
-    		    $('#showError').html('Harap dilengkapi dulu');
-                $('#showError').fadeIn('slow');
-                setTimeout(function() {                        
-                    $('#showError').fadeOut('slow');
-                }, 2000); //  1000 = 1detik	
-    		}
-    		/**/
-		}
-		
         function CopyToClipboard(id){
             var r = document.createRange();
             r.selectNode(document.getElementById(id));
@@ -450,21 +400,19 @@
     			            <div class="d-md-flex justify-content-between">
     							<div class="col-sm-12">
     								<div class="rsvp-form-field">
-    									<input type="text" name="nama" id="nama" placeholder="Masukan nama kamu" required>
+    									<input type="text" name="name" id="name" placeholder="Masukan nama kamu" required>
     								</div>
     								<div class="rsvp-form-field textarea">
-    									<textarea rows="1" placeholder="Berikan ucapanmu" name="ucapan" id="ucapan"></textarea>
+    									<textarea rows="1" placeholder="Berikan ucapanmu" name="wish" id="wish"></textarea>
     								</div>
     								<div class="rsvp-form-field">
                         
                                         <label>Kamu akan hadir?</label>
                                         <div class="radio-wrapper">
-                                            <input type="radio" checked="" id="radio-1" name="kehadiran" value="Hadir" class"kehadiran">
+                                            <input type="radio" checked="" id="radio-1" name="attend" value="true">
                                             <label for="radio-1">Hadir</label>
-                                            <input type="radio" id="radio-2" name="kehadiran" value="Tidak Hadir" class"kehadiran">
+                                            <input type="radio" id="radio-2" name="attend" value="false">
                                             <label for="radio-2">Tidak Hadir</label>
-                                            <input type="radio" id="radio-3" name="kehadiran" value="Masih Ragu" class"kehadiran">
-                                            <label for="radio-3">Masih Ragu</label>
                                         </div>
     								</div>
     							</div>
@@ -476,14 +424,20 @@
                             <div style="display:none" id="showNotif" class="alert alert-success"></div>
                             <div style="display:none" id="showError" class="alert alert-danger"></div>
                         </div>
-                        <button type="submit" class="rsvp-form-submit js-submit" onclick='SubForm()'>Kirim Ucapan</button>
+                        <button type="submit" style="cursor: pointer;" class="rsvp-form-submit js-submit" onclick="submitForm()">Kirim Ucapan</button>
                         
                     </div>
 				</div>
 			</div>
 			<div class="row" id="ucapan-doa">
-			    <div class='col-md-8 offset-md-2 cmt-3'><h2 class='heading text-center' data-aos='fade-up'>Ucapan Doa</h2><div class='scroll' data-aos='fade-up'><div class='box_ucapan'><div class='row_ucapan'><div class='card'><div class='card-body'><blockquote class=''><p>Selamat menempuh hidup baru bli
-</p><footer class='blockquote-footer small p-1'><span class='ucapan_nama'>Sidayana, <span class='ucapan-hadir'>Saya akan hadir</span></span></footer></blockquote></div></div></div><div class='row_ucapan'><div class='card'><div class='card-body'><blockquote class=''><p>Selamat bli wayan dan istri, semoga langgeng 🙏</p><footer class='blockquote-footer small p-1'><span class='ucapan_nama'>Putu, <span class='ucapan-hadir'>Saya akan hadir</span></span></footer></blockquote></div></div></div><div class='row_ucapan'><div class='card'><div class='card-body'><blockquote class=''><p>Selamat menempuh hidup baru</p><footer class='blockquote-footer small p-1'><span class='ucapan_nama'>Wahyuni, <span class='ucapan-hadir'>Saya akan hadir</span></span></footer></blockquote></div></div></div><div class='row_ucapan'><div class='card'><div class='card-body'><blockquote class=''><p>Selamat ya</p><footer class='blockquote-footer small p-1'><span class='ucapan_nama'>Sinta, <span class='ucapan-hadir'>Saya akan hadir</span></span></footer></blockquote></div></div></div><div class='row_ucapan'><div class='card'><div class='card-body'><blockquote class=''><p>Selamat ya, semoga langgeng</p><footer class='blockquote-footer small p-1'><span class='ucapan_nama'>Dewi, <span class='ucapan-hadir'>Maaf saya berhalangan hadir</span></span></footer></blockquote></div></div></div><div class='row_ucapan'><div class='card'><div class='card-body'><blockquote class=''><p>Selamat menempuh hidup baru</p><footer class='blockquote-footer small p-1'><span class='ucapan_nama'>Diah, <span class='ucapan-hadir'>Saya masih ragu</span></span></footer></blockquote></div></div></div><div class='row_ucapan'><div class='card'><div class='card-body'><blockquote class=''><p>Selamat semoga langgeng</p><footer class='blockquote-footer small p-1'><span class='ucapan_nama'>Ayu, <span class='ucapan-hadir'>Saya akan hadir</span></span></footer></blockquote></div></div></div></div></div>			</div>
+				<div class='col-md-8 offset-md-2 cmt-3'>
+					<h2 class='heading text-center' data-aos='fade-up'>Ucapan Doa</h2>
+			
+					<div class='scroll' data-aos='fade-up' id="commentContainer">
+					</div>
+				</div>
+			</div>
+			
 		</div>
 	</section>
 	<!-- UCAPAN END -->
@@ -590,6 +544,6 @@
 <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="assets/js/script.js"></script>
-
+<script src="assets/js/supabase.js"></script>
 </body>
 </html>
