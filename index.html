@@ -57,6 +57,30 @@
                 $('#showNotifgift2').fadeOut('slow');
             }, 3000); //  1000 = 1detik	
         }
+    // Function to get URL parameter by name
+    function getURLParameter(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+    // Function to set the guest name
+    function setGuestName() {
+        // Get the "to" parameter value from the URL
+        const guestName = getURLParameter('to');
+
+        // Set the guest name in the modal
+        const modalGuestName = document.getElementById('modal-guest-name');
+        if (modalGuestName) {
+            modalGuestName.textContent = guestName || '';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Call the setGuestName function when the DOM is loaded
+        setGuestName();
+
+        // Other existing script code...
+    });
 	</script>
 </head>
 <body>
@@ -81,7 +105,7 @@
 					<h2 class="modal-dari">Wahyu & Anisa</h2>
 					<p class="paragraph-modal">Kepada</p>
 					<p class="paragraph-yth">Bapak/Ibu/Saudara/i</p>
-					<h2 class="modal-penerima">Nama Tamu</h2>
+					<h2 id="modal-guest-name" class="modal-penerima">Nama Tamu</h2>
 					<div class="btn-modal-area">
 						<button type="button" class="btn btn-default btn-modal" id="button-modal" data-dismiss="modal">Buka Undangan</button>
 					</div>
