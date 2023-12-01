@@ -11,6 +11,7 @@ async function submitForm() {
   const name = document.getElementById("name").value;
   const wish = document.getElementById("wish").value;
   const attend = document.querySelector('input[name="attend"]:checked').value;
+  console.log(attend);
   if (name != "" && attend != "" && wish != "") {
     const { error } = await core.from("comments").insert([
       {
@@ -77,7 +78,8 @@ function renderComments(comments) {
                               <span class='ucapan_nama'>
                                   ${comment.attributes.author},
                                   <span class='ucapan-hadir'>${
-                                    comment.attributes.is_attend
+                                    comment.attributes.is_attend === "true" ||
+                                    comment.attributes.is_attend === true
                                       ? "Hadir"
                                       : "Tidak Hadir"
                                   }</span>
